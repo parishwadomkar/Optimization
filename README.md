@@ -1,2 +1,2 @@
 # Optimization
-Linear integer, convex, non-convex, discrete, continuous, non-linear optimization examples
+Linear integer, convex, non-convex, discrete, continuous, non-linear optimization problems
