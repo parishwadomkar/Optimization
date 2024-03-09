@@ -1,0 +1,115 @@
+using JuMP
+import Ipopt
+
+# Import data from the data file
+include("project_data.jl")
+
+# Define the model
+model = Model(Ipopt.Optimizer)
+
+#########################################################
+# Sets
+#########################################################
+NODEINDEX = 1:11
+GENERATORINDEX = 1:9
+
+#########################################################
+# Parameters
+#########################################################
+println("Cost: ", cost)
+println("Max capacity : ", max_capacity)
+println("Demand : ", demand)
+
+#########################################################
+# Variables
+#########################################################
+
+@variable(model, v[NODEINDEX])
+@variable(model, theta[NODEINDEX])
+@variable(model, active[GENERATORINDEX])
+@variable(model, reactive[GENERATORINDEX])
+@variable(model, G[NODEINDEX])
+@variable(model, R[NODEINDEX])
+@variable(model, p_var[NODEINDEX, NODEINDEX])
+@variable(model, q_var[NODEINDEX, NODEINDEX])
+
+#########################################################
+# Objective function
+#########################################################
+
+@objective(model, Min, sum(cost[i] * active[i] for i in GENERATORINDEX))
+
+#########################################################
+# Constraints
+#########################################################
+
+# Variable bounds
+for i in NODEINDEX
+    @constraint(model, 0.98 <= v[i] <= 1.02)
+    @constraint(model, -3.14159 <= theta[i] <= 3.14159)
+end
+
+# Active and reactive power bounds
+active_constraints = Dict{Int, ConstraintRef}()
+for i in GENERATORINDEX
+    @constraint(model, 0 <= active[i] <= max_capacity[i])
+    @constraint(model, -0.003 * max_capacity[i] <= reactive[i] <= 0.003 * max_capacity[i])
+    active_constraints[i] = @constraint(model, 0 <= active[i] <= max_capacity[i])
+end
+
+# Power flow constraints
+for k in NODEINDEX, l in NODEINDEX
+    @constraint(model, p_var[k, l] == v[k]^2 * g[k, l] - v[k] * v[l] * g[k, l] * cos(theta[k] - theta[l]) - v[k] * v[l] * b[k, l] * sin(theta[k] - theta[l]))
+    @constraint(model, q_var[k, l] == -v[k]^2 * b[k, l] + v[k] * v[l] * b[k, l] * cos(theta[k] - theta[l]) - v[k] * v[l] * g[k, l] * sin(theta[k] - theta[l]))
+end
+
+# Active and reactive power conservation constraints
+@constraint(model, [k in NODEINDEX], sum(p_var[k, i] for i in NODEINDEX) - G[k] + demand[k] == 0)
+@constraint(model, [k in NODEINDEX], sum(q_var[k, i] for i in NODEINDEX) - R[k] == 0)
+
+# Generation and load balance constraints
+@constraint(model, G[1] == 0)
+@constraint(model, G[2] == active[1] + active[2] + active[3])
+@constraint(model, G[3] == active[4])
+@constraint(model, G[4] == active[5])
+@constraint(model, G[5] == active[6])
+@constraint(model, G[6] == 0)
+@constraint(model, G[7] == active[7])
+@constraint(model, G[8] == 0)
+@constraint(model, G[9] == active[8] + active[9])
+@constraint(model, G[10] == 0)
+@constraint(model, G[11] == 0)
+
+@constraint(model, R[1] == 0)
+@constraint(model, R[2] == reactive[1] + reactive[2] + reactive[3])
+@constraint(model, R[3] == reactive[4])
+@constraint(model, R[4] == reactive[5])
+@constraint(model, R[5] == reactive[6])
+@constraint(model, R[6] == 0)
+@constraint(model, R[7] == reactive[7])
+@constraint(model, R[8] == 0)
+@constraint(model, R[9] == reactive[8] + reactive[9])
+@constraint(model, R[10] == 0)
+@constraint(model, R[11] == 0)
+
+# Solve the model
+optimize!(model)
+
+# Display results
+println("\n------------")
+println("solve_result: ", termination_status(model))
+println("active: ", value.(active))
+println("reactive: ", value.(reactive))
+println("v: ", value.(v))
+println("theta: ", value.(theta))
+println("Active Power Flow: ", value.(p_var))
+println("Reactive Power Flow: ", value.(q_var))
+println("Cost1: ", objective_value(model))
+
+# To find the generator with the most significant cost-reducing dual value
+dual_values = Dict{Int, Float64}()
+for i in GENERATORINDEX
+    dual_values[i] = dual(active_constraints[i])
+end
+optimal_generator_index = argmin(dual_values)
+println("Generator $optimal_generator_index is the most beneficial for capacity expansion.")
