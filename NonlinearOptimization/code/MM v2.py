@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 12 11:54:02 2025
-
-@author: arsalann
-"""
-
 import pyomo.environ as pyo
 import numpy as np
 import pandas as pd
@@ -858,3 +851,4 @@ with open('pyomo_resultsMM.pkl', 'wb') as f:
     
     
     
+
