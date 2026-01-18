@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Aug 26 10:52:21 2025
-
-@author: arsalann
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 12 12:01:57 2025
-
-@author: arsalann
 """
 import pyomo.environ as pyo
 import pandas as pd
@@ -917,4 +908,5 @@ def build_masterOnlyFC(s, parking_data, parking_to_bus, SampPerH, Ch_cost, robot
     
     
     modelFC.cuts = pyo.ConstraintList()  # THIS IS CRUCIAL
+
     return modelFC
