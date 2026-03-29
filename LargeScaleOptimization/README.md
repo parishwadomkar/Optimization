@@ -221,4 +221,5 @@ Published demand-modeling article:
 ### PhD work (Licentiate Thesis):
 
 Omkar Parishwad — PhD work [Chalmers publication page](https://research.chalmers.se/publication/547894)
-``
+
+---
