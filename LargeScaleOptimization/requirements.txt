@@ -1,0 +1,12 @@
+numpy>=1.26
+pandas>=2.1
+networkx>=3.2
+pyomo>=6.7
+geopandas>=0.14
+
+# MILP solver interface used in the notebook (requires a Gurobi license)
+gurobipy>=11.0
+
+# Notebook runtime
+ipykernel>=6.29
+jupyterlab>=4.1
