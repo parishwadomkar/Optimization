@@ -145,8 +145,7 @@ The repository is organized to keep the optimization model, sample input data, a
 - [`LBBD_Small.ipynb`](./LBBD_Small.ipynb): main notebook for building and running the LBBD-based optimization model  
 - [`small/`](./small): sample spatial input data for a smaller study area in Gothenburg, Sweden  
 - [`Results/`](./Results): exported figures and solution files from optimization runs  
-- [`Considerations.png`](./Considerations.png): conceptual problem scope and planning considerations  
-- [`LBBD.jpg`](./LBBD.jpg): conceptual LBBD workflow  
+- [`requirements.txt`](./requirements.txt): python packages for opti code built and run 
 
 The sample data are included so users can understand the structure of the model inputs and reproduce a smaller-scale version of the optimization before extending it to larger study areas.
 
@@ -188,18 +187,6 @@ For the detailed numerical solution, see:
 
 That file provides exported optimization outputs in spreadsheet form and can be used to inspect installed assets, operational values, and aggregated performance indicators in more detail.
 
-### Main findings from the optimization
-
-For the full Gothenburg case study discussed in the associated paper, the integrated optimization shows that:
-
-- **medium chargers dominate** the public charging network because they provide the best cost-throughput trade-off for typical urban dwell times,
-- **user redirection alone** yields modest gains, mainly by reducing local peak-capacity needs,
-- **battery storage without PV** has limited value because it mainly shifts grid purchases in time,
-- **PV materially changes the economics**, reducing grid purchases and making more locations attractive for redirected charging demand,
-- and the **combined PV + BESS + redirection configuration** yields the strongest profit improvement and the largest reduction in purchased grid electricity.
-
-These results illustrate the core message of the repository: charger deployment, local renewable generation, storage scheduling, and spatial flexibility should be planned together rather than in isolation.
-
 ---
 
 ## Contact / support
@@ -217,26 +204,21 @@ For issues, feature requests, or reproducibility questions, please open a GitHub
 
 ### Charging infrastructure optimization
 
-Parishwad, Omkar; Najafi, Arsalan; Gao, Kun — *Joint optimization of charging infrastructure and renewable energies with battery storage considering user redirection incentives* (SSRN preprint, Aug 15, 2025)
+**Parishwad, Omkar; Najafi, Arsalan; Gao, Kun** — *Joint optimization of charging infrastructure and renewable energies with battery storage considering user redirection incentives.*  (SSRN preprint, Aug 15, 2025).  
 
 - [SSRN preprint](https://doi.org/10.2139/ssrn.5395539)  
 - [LargeScaleOptimization codebase](https://github.com/parishwadomkar/Optimization/tree/main/LargeScaleOptimization)
 
 ### Demand simulation source
 
-The charging-demand inputs used in this optimization are based on the MATSim-driven simulation framework:
-
-- [UrbanEV-v2](https://github.com/parishwadomkar/UrbanEV-v2)
+The charging-demand inputs used in this optimization are based on the MATSim-driven simulation framework available at [UrbanEV-v2](https://github.com/parishwadomkar/UrbanEV-v2).
 
 Published demand-modeling article:
 
-Parishwad, Omkar; Gao, Kun; Najafi, Arsalan — *Integrated and Agent-Based Charging Demand Prediction Considering Cost-Aware and Adaptive Charging Behavior*. *Transportation Research Part D: Transport and Environment*, 154 (2026) 105285.
-
-- [Article DOI](https://doi.org/10.1016/j.trd.2026.105285)
+**Parishwad, Omkar; Gao, Kun; Najafi, Arsalan** — *Integrated and Agent-Based Charging Demand Prediction Considering Cost-Aware and Adaptive Charging Behavior*. **Transportation Research Part D: Transport and Environment**, 154 (2026) 105285.  
+  (DOI: https://doi.org/10.1016/j.trd.2026.105285)
 
 ### PhD work (Licentiate Thesis):
 
-Omkar Parishwad — PhD thesis / Chalmers publication page:
-
-- [Chalmers publication page](https://research.chalmers.se/publication/547894)
+Omkar Parishwad — PhD work [Chalmers publication page](https://research.chalmers.se/publication/547894)
 ``
