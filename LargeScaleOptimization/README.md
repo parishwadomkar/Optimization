@@ -84,71 +84,7 @@ In practice:
 - the **MIP subproblem** is used to recover feasible discrete recourse values,
 - and the master is tightened iteratively using both dual-based and logic-based cuts.
 
-### Optimization model at a glance
-
-At a high level, the optimization maximizes annual profit from the perspective of the CPO:
-
-$$
-\max \; \big[\text{charging revenue} - \text{grid electricity cost} - \text{slack penalty} - \text{annualized infrastructure cost}\big] + \Theta
-$$
-
-where $\Theta$ represents the value of redirection recourse in the implemented LBBD scheme.
-
-The decomposition is organized as follows.
-
-**Master problem**
-- decides public charger deployment,
-- decides PV and battery installation,
-- optimizes local charging dispatch, grid usage, PV usage, and battery operation,
-- exposes residual public demand and spare charging capacity to the subproblems,
-- and carries the redirection value variables $\Theta_{m,t}$.
-
-**Slot-level subproblems**
-- are defined for each month-slot pair $(m,t)$,
-- receive sendable public demand and spare receiving capacity from the master,
-- evaluate profitable redirection over active nearby arcs,
-- and return cuts that tighten the master problem.
-
-### Implemented LBBD workflow
-
-The implemented algorithm follows this sequence:
-
-1. Solve the **master problem** with the current cut set.  
-2. Extract the interface quantities from the master solution:
-   - residual public demand that can be redirected,
-   - spare charger-type-specific receiving capacity,
-   - and the energy-balance dual information used to price recourse.  
-3. Solve the **LP subproblems** for active time slots to obtain:
-   - continuous redirection values,
-   - dual multipliers,
-   - and strengthened Benders cuts.  
-4. Solve the **MIP subproblems** to recover feasible discrete recourse values for redirected trips.  
-5. Add the generated cuts to the master and update:
-   - the **upper bound** from the master objective,
-   - the **lower bound** from feasible recourse evaluation.  
-6. Repeat until the optimality gap is below tolerance.  
-
-The current implementation also includes practical stabilization devices such as:
-
-- slot-wise value variables for redirection recourse,
-- safe initialization bounds on recourse values,
-- charger-type-specific spare-capacity interfaces,
-- Pareto-type strengthening of Benders cuts,
-- and a box trust region on design variables to reduce oscillation between successive master solutions.
-
 ---
-
-## Repository contents
-
-The repository is organized to keep the optimization model, sample input data, and exported results easy to navigate.
-
-- [`LBBD_Small.ipynb`](./LBBD_Small.ipynb): main notebook for building and running the LBBD-based optimization model  
-- [`small/`](./small): sample spatial input data for a smaller study area in Gothenburg, Sweden  
-- [`Results/`](./Results): exported figures and solution files from optimization runs  
-- [`requirements.txt`](./requirements.txt): python packages for opti code built and run 
-
-The sample data are included so users can understand the structure of the model inputs and reproduce a smaller-scale version of the optimization before extending it to larger study areas.
-
 ### Input data
 
 The [`small/`](./small) folder contains sample input data for a smaller region in Gothenburg. These files support testing, reproducibility, and understanding of the model setup.
@@ -181,11 +117,7 @@ A representative result is shown below.
 
 <p align="center"><em>Illustrative optimization output showing the interaction between PV, battery deployment, and user redirection.</em></p>
 
-For the detailed numerical solution, see:
-
-- [`Results_OptiSmall.xlsx`](./Results/Results_OptiSmall.xlsx)
-
-That file provides exported optimization outputs in spreadsheet form and can be used to inspect installed assets, operational values, and aggregated performance indicators in more detail.
+For the detailed numerical solution, check out [`Results_OptiSmall.xlsx`](./Results/Results_OptiSmall.xlsx). The file provides exported optimization outputs in spreadsheet form and can be used to inspect installed assets, operational values, and aggregated performance indicators in more detail.
 
 ---
 
@@ -204,11 +136,9 @@ For issues, feature requests, or reproducibility questions, please open a GitHub
 
 ### Charging infrastructure optimization
 
-**Parishwad, Omkar; Najafi, Arsalan; Gao, Kun** — *Joint optimization of charging infrastructure and renewable energies with battery storage considering user redirection incentives.*  (SSRN preprint, Aug 15, 2025).  
+**Parishwad, Omkar; Najafi, Arsalan; Gao, Kun** — *Joint optimization of charging infrastructure and renewable energies with battery storage considering user redirection incentives.*  ([SSRN preprint](https://doi.org/10.2139/ssrn.5395539)).  
 
-- [SSRN preprint](https://doi.org/10.2139/ssrn.5395539)  
-- [LargeScaleOptimization codebase](https://github.com/parishwadomkar/Optimization/tree/main/LargeScaleOptimization)
-
+---
 ### Demand simulation source
 
 The charging-demand inputs used in this optimization are based on the MATSim-driven simulation framework available at [UrbanEV-v2](https://github.com/parishwadomkar/UrbanEV-v2).
@@ -217,9 +147,5 @@ Published demand-modeling article:
 
 **Parishwad, Omkar; Gao, Kun; Najafi, Arsalan** — *Integrated and Agent-Based Charging Demand Prediction Considering Cost-Aware and Adaptive Charging Behavior*. **Transportation Research Part D: Transport and Environment**, 154 (2026) 105285.  
   (DOI: https://doi.org/10.1016/j.trd.2026.105285)
-
-### PhD work (Licentiate Thesis):
-
-Omkar Parishwad — PhD work [Chalmers publication page](https://research.chalmers.se/publication/547894)
 
 ---
